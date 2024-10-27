@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wishlist_front/features/authentication/presentation/pages/login.dart';
-import 'package:wishlist_front/features/groups/presentation/pages/list_group.dart';
+import 'package:wishlist_front/features/groups/presentation/pages/listGroup.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: "../.env");
   runApp(const WishList());
 }
 
