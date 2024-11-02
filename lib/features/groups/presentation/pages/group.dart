@@ -1,11 +1,10 @@
-import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:wishlist_front/core/models/GroupModel.dart';
 import 'package:wishlist_front/core/models/UserModel.dart';
-import 'package:wishlist_front/features/gifts/presentation/pages/listGift.dart';
+
+import 'package:wishlist_front/features/users/UserCardWeb.dart';
+
+import 'package:wishlist_front/core/Utils.dart';
 
 
 class GroupPage extends StatefulWidget {
@@ -26,7 +25,7 @@ class _GroupState extends State<GroupPage> {
   void initState() {
     super.initState();
     idGroup = widget.group.id;
-    futureUsers = fetchUser(idGroup);
+    futureUsers = Utils.fetchUser(idGroup);
   }
 
 
@@ -65,38 +64,6 @@ class _GroupState extends State<GroupPage> {
               );
             }
           }),
-    );
-  }
-}
-
-
-Future<List<UserModel>> fetchUser(int id) async {
-  final response = await http.get(Uri.parse('${dotenv.env['API_URL']}/groups/$id/users'));
-
-  if (response.statusCode == 200) {
-    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
-    return data.map((json) => UserModel.fromJson(json)).toList();
-  } else {
-    throw Exception('Failed to load user');
-  }
-}
-
-class UserCardWeb extends StatelessWidget {
-  final UserModel user;
-  final int groupdId;
-
-  const UserCardWeb({required this.user,required this.groupdId, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const FlutterLogo(),
-        title: Text('Liste de ${user.username}'),
-        onTap: () {
-          Navigator.of(context).pushNamed('/group/users', arguments: {'user': user, 'groupId': groupdId});
-        },
-      ),
     );
   }
 }

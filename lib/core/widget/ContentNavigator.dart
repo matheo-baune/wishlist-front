@@ -9,8 +9,10 @@ import 'package:wishlist_front/features/authentication/presentation/pages/profil
 import 'package:wishlist_front/features/gifts/presentation/pages/listGift.dart';
 import 'package:wishlist_front/features/groups/presentation/pages/createGroup.dart';
 import 'package:wishlist_front/features/groups/presentation/pages/group.dart';
+
 import 'package:wishlist_front/core/models/GroupModel.dart';
 import 'package:wishlist_front/core/models/UserModel.dart';
+import 'package:wishlist_front/core/Utils.dart';
 
 class ContentNavigator extends StatelessWidget {
   ContentNavigator({super.key});
@@ -25,7 +27,7 @@ class ContentNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sharedData = Provider.of<SharedData>(context, listen: false);
+    final sharedData = Provider.of<SharedData>(context);
     return Navigator(
       key: GlobalKey<NavigatorState>(),
       onGenerateRoute: (RouteSettings settings) {
@@ -36,7 +38,7 @@ class ContentNavigator extends StatelessWidget {
             builder = (BuildContext _) => pages[sharedData.currentIndex];
             break;
           case '/group':
-            return pageRouteSlideRightToLeft(
+            return Utils.pageRouteSlideRightToLeft(
                 GroupPage(group: settings.arguments as GroupModel));
           case '/group/users':
             final args = settings.arguments as Map<String, dynamic>;
@@ -44,7 +46,7 @@ class ContentNavigator extends StatelessWidget {
             final groupId = args['groupId'] as int?;
 
             if (user != null && groupId != null) {
-              return pageRouteSlideRightToLeft(
+              return Utils.pageRouteSlideRightToLeft(
                 ListGift(
                   userModel: user,
                   groupId: groupId,
@@ -53,6 +55,7 @@ class ContentNavigator extends StatelessWidget {
             } else {
               throw Exception('Invalid arguments for /group/users route');
             }
+
           default:
             throw Exception('Invalid route: ${settings.name}');
         }
@@ -60,25 +63,4 @@ class ContentNavigator extends StatelessWidget {
       },
     );
   }
-}
-
-
-Route pageRouteSlideRightToLeft(Widget page, {RouteSettings? settings}) {
-  return PageRouteBuilder(
-    settings: settings,
-    pageBuilder: (context, animation, secondaryAnimation) => page,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      var offsetAnimation = animation.drive(tween);
-
-      return SlideTransition(
-        position: offsetAnimation,
-        child: child,
-      );
-    },
-  );
 }
