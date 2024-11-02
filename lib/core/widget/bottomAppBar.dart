@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class BottomAppBarCustom extends StatelessWidget {
@@ -5,8 +7,9 @@ class BottomAppBarCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double x = MediaQuery.of(context).size.height*0.08;
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.07,
+      height: clampDouble(x, 60, 80),
       child: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

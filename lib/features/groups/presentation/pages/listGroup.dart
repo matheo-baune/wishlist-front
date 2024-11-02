@@ -35,12 +35,7 @@ class _ListGroupState extends State<ListGroup> {
   @override
   Widget build(BuildContext context) {
     if (isWeb()) {
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Liste des groupes'),
-        ),
-        body: FutureBuilder<List<GroupModel>>(
+      return FutureBuilder<List<GroupModel>>(
             initialData: const [],
             future: futureGroups,
             builder: (context, snapshot) {
@@ -66,10 +61,8 @@ class _ListGroupState extends State<ListGroup> {
                     )
                   ],
                 );
-              }
-            }),
-        bottomNavigationBar: const BottomAppBarCustom(),
-      );
+              }}
+    );
     } else {
       //TODO - Version mobile
       return const Scaffold(
@@ -147,21 +140,41 @@ class GroupCardWeb extends StatelessWidget {
       child: ListTile(
         leading: const FlutterLogo(size: 50.0),
         title: Text(
-          capitalize(group.name),
+          capitalize('${group.name} - Code : ${group.code}'),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
         ),
-        subtitle: const Text('TODO Implémentation de la description'),
-        trailing: const Icon(Icons.more_horiz_outlined),
+        subtitle: Text(group.description),
+        trailing: PopupMenuButton<ListTileTitleAlignment>(
+          itemBuilder: (BuildContext context) =>
+          <PopupMenuEntry<ListTileTitleAlignment>>[
+            PopupMenuItem<ListTileTitleAlignment>(
+              onTap: () => {
+                _showDialogRemoveGroup(context,group.id),
+              },
+              value: ListTileTitleAlignment.threeLine,
+              child: const Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.center,
+                children: [
+                  Icon(Icons.delete),
+                  Text(' Delete'),
+                ],
+              ),
+            ),
+          ],
+        ),
         onTap: () {
-          Navigator.of(context).push(_createRoute(GroupPage(group: group)));
+          Navigator.of(context).pushNamed('/group', arguments: group);
         },
       ),
     );
   }
 }
+
+
 
 Future<List<GroupModel>> fetchGroups() async {
   final uri = Uri.parse('${dotenv.env['API_URL']}/groups/');
@@ -174,5 +187,45 @@ Future<List<GroupModel>> fetchGroups() async {
     throw Exception('Failed to load groups');
   }
 }
+
+void _showDialogRemoveGroup(BuildContext context,int groupId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Supprimer un groupe'),
+        content: const Text('Êtes-vous sûr de vouloir supprimer ce groupe ?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _removeGroup(groupId);// Replace 1 with the actual group ID
+              Navigator.of(context).pop();
+
+            },
+            child: const Text('Supprimer'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _removeGroup(int groupId) async {
+  final uri = Uri.parse('${dotenv.env['API_URL']}/groups/$groupId');
+  final response = await http.delete(uri);
+
+  if (response.statusCode == 200) {
+    return;
+  } else {
+    throw Exception('Failed to delete group');
+  }
+}
+
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

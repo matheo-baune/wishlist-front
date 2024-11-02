@@ -35,7 +35,7 @@ class _GroupState extends State<GroupPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(widget.group.name),
+        title: Text('${widget.group.name} - Code : ${widget.group.code}'),
       ),
       body: FutureBuilder<List<UserModel>>(
           initialData: const [],
@@ -92,9 +92,9 @@ class UserCardWeb extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const FlutterLogo(),
-        title: Text(user.username),
+        title: Text('Liste de ${user.username}'),
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListGift(userModel: user, groupId: groupdId)));
+          Navigator.of(context).pushNamed('/group/users', arguments: {'user': user, 'groupId': groupdId});
         },
       ),
     );
