@@ -1,9 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:wishlist_front/features/authentication/presentation/pages/login.dart';
-import 'package:wishlist_front/features/groups/presentation/pages/list_group.dart';
+import 'dart:io';
 
-void main() {
-  runApp(const WishList());
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wishlist_front/core/SharedData.dart';
+import 'package:wishlist_front/application.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+bool isWeb() {
+  return Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+}
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
+  if(!isWeb()){
+    dotenv.env['API_URL'] = dotenv.env['API_URL_PHONE']!;
+  }
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => SharedData(),
+    child: const WishList(),
+  ));
 }
 
 class WishList extends StatelessWidget {
@@ -11,18 +26,14 @@ class WishList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    //Ajouter logique de connexion pour choisir quel page afficher
-    Widget page = true ? const ListGroup() : const Authentication();
-
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'WishList',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: page,
+      home: const Application(),
     );
   }
 }
