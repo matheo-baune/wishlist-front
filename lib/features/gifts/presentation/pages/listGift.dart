@@ -4,6 +4,7 @@ import 'package:wishlist_front/core/models/UserModel.dart';
 
 import 'package:wishlist_front/core/Utils.dart';
 
+import '../../../../Generic.dart';
 import 'GiftCardWeb.dart';
 
 class ListGift extends StatefulWidget {
@@ -35,36 +36,21 @@ class _ListGiftState extends State<ListGift> {
         title: Text(widget.userModel.username),
       ),
       body: Stack(children: [
-        FutureBuilder<List<GiftModel>>(
-          initialData: const [],
-          future: futureGifts,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              print('Error: ${snapshot.error}');
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                  child: Text('No users in group found',
-                      style: TextStyle(color: Colors.white)));
-            } else {
-              return Row(
+        GenericFutureBuilder<GiftModel>(
+            future: futureGifts,
+            initialData: const [],
+            builder: (context, data) {
+            return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return GiftCardWeb(gift: snapshot.data![index], user: userModel);
-                      },
-                    ),
-                  )
-                ],
-              );
-            }
-          },
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                          return GiftCardWeb(gift: data[index], user: userModel);
+                        },
+                ),
         ),
         Positioned(
           bottom: 16.0,
