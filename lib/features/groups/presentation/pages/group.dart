@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:wishlist_front/core/models/GroupModel.dart';
 import 'package:wishlist_front/core/models/UserModel.dart';
@@ -23,6 +25,7 @@ class _GroupState extends State<GroupPage> {
 
   @override
   void initState() {
+    inspect(widget.group);
     super.initState();
     idGroup = widget.group.id;
     futureUsers = Utils.fetchUser(idGroup);

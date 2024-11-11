@@ -3,7 +3,7 @@ import 'package:universal_io/io.dart';
 import 'package:wishlist_front/core/models/GroupModel.dart';
 
 import 'package:wishlist_front/core/Utils.dart';
-import 'GroupCardWeb.dart';
+import 'groupCardWeb.dart';
 
 
 

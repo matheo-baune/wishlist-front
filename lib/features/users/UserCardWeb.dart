@@ -11,7 +11,7 @@ class UserCardWeb extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: const FlutterLogo(),
+        leading: const Icon(Icons.person,color: Colors.red,),
         title: Text('Liste de ${user.username}'),
         onTap: () {
           Navigator.of(context).pushNamed('/group/users', arguments: {'user': user, 'groupId': groupdId});

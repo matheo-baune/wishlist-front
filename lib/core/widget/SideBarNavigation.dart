@@ -19,49 +19,55 @@ class _SidebarNavigation extends State<SidebarNavigation>{
   Widget build(BuildContext context) {
     final sharedData = Provider.of<SharedData>(context);
 
-    return Row(
-      children: [
-        NavigationRail(
-          selectedIndex: sharedData.currentIndex,
-          onDestinationSelected: (int index) {
-            setState(() {
-              if (index == 2) {
-                _showDialogJoinGroup(context);
-              } else {
-                sharedData.currentIndex = index;
-              }
-            });
-          },
-          labelType: NavigationRailLabelType.all,
-          destinations: const [
-            NavigationRailDestination(
-              icon: Icon(Icons.home),
-              label: Text('Home'),
+    return SizedBox(
+      width: 100,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 79,
+            child: NavigationRail(
+              selectedIndex: sharedData.currentIndex,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  if (index == 2) {
+                    _showDialogJoinGroup(context);
+                  } else {
+                    sharedData.currentIndex = index;
+                  }
+                });
+              },
+              labelType: NavigationRailLabelType.all,
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.home),
+                  label: Text('Home'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.person),
+                  label: Text('Profile'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.group_add),
+                  label: Text('Join'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.add),
+                  label: Text('Create'),
+                ),
+              ],
+              groupAlignment: 0.0,
+              trailing: IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {},
+              ),
             ),
-            NavigationRailDestination(
-              icon: Icon(Icons.person),
-              label: Text('Profile'),
-            ),
-            NavigationRailDestination(
-              icon: Icon(Icons.group_add),
-              label: Text('Join'),
-            ),
-            NavigationRailDestination(
-              icon: Icon(Icons.add),
-              label: Text('Create'),
-            ),
-          ],
-          groupAlignment: 0.0,
-          trailing: IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {},
           ),
-        ),
-        const VerticalDivider(
-          thickness: 1,
-          color: Colors.black,
-        ),
-      ],
+          const VerticalDivider(
+            thickness: 1,
+            color: Colors.black,
+          ),
+        ],
+      ),
     );
   }
 }

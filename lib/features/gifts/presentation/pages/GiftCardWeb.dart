@@ -12,14 +12,7 @@ class GiftCardWeb extends StatelessWidget {
   GiftCardWeb({required this.gift, super.key, required this.user});
 
   double sizeImage = 50;
-  late Widget icon = gift.imageUrl != null
-      ? Image.network(
-    gift.imageUrl!,
-    width: sizeImage,
-    height: sizeImage,
-    fit: BoxFit.contain,
-  )
-      : Icon(Icons.image, size: sizeImage);
+  late Widget icon = Icon(Icons.image, size: sizeImage);
 
   @override
   Widget build(BuildContext context) {

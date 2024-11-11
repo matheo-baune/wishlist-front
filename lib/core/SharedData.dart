@@ -6,7 +6,6 @@ class SharedData with ChangeNotifier {
   int get currentIndex => _currentIndex;
 
   set currentIndex(int value) {
-    print(value);
     _currentIndex = value;
     notifyListeners();
   }

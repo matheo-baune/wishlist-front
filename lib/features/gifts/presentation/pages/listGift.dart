@@ -40,30 +40,33 @@ class _ListGiftState extends State<ListGift> {
             future: futureGifts,
             initialData: const [],
             builder: (context, data) {
-            return Row(
+              return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                          return GiftCardWeb(gift: data[index], user: userModel);
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        return GiftCardWeb(gift: data[index], user: userModel);
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 16.0,
+                    child: ElevatedButton.icon(
+                        onPressed: () {
+                          Utils.showDialogAddGift(
+                              context, widget.groupId, userModel);
                         },
-                ),
-        ),
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: ElevatedButton.icon(
-              onPressed: () {
-                Utils.showDialogAddGift(context, widget.groupId, userModel);
-              },
-              label: const Text('Ajouter un cadeau'),
-              icon: Icon(Icons.add)),
-        )
+                        label: const Text('Ajouter un cadeau'),
+                        icon: Icon(Icons.add)),
+                  ),
+                ],
+              );
+            })
       ]),
     );
   }
 }
-

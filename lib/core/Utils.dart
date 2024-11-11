@@ -1,9 +1,10 @@
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import '../features/authentication/presentation/pages/login.dart';
+import '../features/authentication/presentation/widget/loginForm.dart';
 import 'models/GiftModel.dart';
 import 'models/GroupModel.dart';
 import 'models/UserModel.dart';
@@ -166,6 +167,10 @@ class Utils {
   }
 
 
+  static String encodePassword(String password) {
+    var bytes = utf8.encode(password);
+    return sha256.convert(bytes).toString();
+  }
 
   static Future<List<GroupModel>> fetchGroups() async {
     final uri = Uri.parse('${dotenv.env['API_URL']}/groups/');

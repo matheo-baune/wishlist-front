@@ -14,9 +14,9 @@ class CreateGroupPage extends StatefulWidget {
 }
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
-  TextEditingController _groupNameController = TextEditingController();
-  TextEditingController _groupDescriptionController = TextEditingController();
-  TextEditingController _groupCodeController = TextEditingController();
+  final TextEditingController _groupNameController = TextEditingController();
+  final TextEditingController _groupDescriptionController = TextEditingController();
+  final TextEditingController _groupCodeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,38 +29,42 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    TextField(
-                      controller: _groupNameController,
-                      decoration:
-                          const InputDecoration(labelText: 'Group name'),
-                    ),
-                    TextField(
-                      controller: _groupDescriptionController,
-                      decoration:
-                          const InputDecoration(labelText: 'Group description'),
-                    ),
-                    TextField(
-                      controller: _groupCodeController,
-                      decoration:
-                          const InputDecoration(labelText: 'Group code'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _createGroupRequest(context);
-                        print("Group created");
-                      },
-                      child: const Text('Create group'),
-                    ),
-                  ],
+            Center(
+              widthFactor: 0.1,
+              child: Card(
+                margin: const EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        controller: _groupNameController,
+                        decoration:
+                        const InputDecoration(labelText: 'Group name'),
+                      ),
+                      TextField(
+                        controller: _groupDescriptionController,
+                        decoration:
+                        const InputDecoration(labelText: 'Group description'),
+                      ),
+                      TextField(
+                        controller: _groupCodeController,
+                        decoration:
+                        const InputDecoration(labelText: 'Group code'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _createGroupRequest(context);
+                          print("Group created");
+                        },
+                        child: const Text('Create group'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

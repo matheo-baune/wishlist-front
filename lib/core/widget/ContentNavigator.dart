@@ -32,7 +32,6 @@ class ContentNavigator extends StatelessWidget {
       key: GlobalKey<NavigatorState>(),
       onGenerateRoute: (RouteSettings settings) {
         WidgetBuilder builder;
-        inspect(settings.name);
         switch (settings.name) {
           case '/':
             builder = (BuildContext _) => pages[sharedData.currentIndex];

@@ -18,7 +18,7 @@ class _ProfileState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    futureUser = getUserById(2); // Replace 1 with the actual user ID
+    futureUser = getUserById(1); // Replace 1 with the actual user ID
   }
 
   @override
