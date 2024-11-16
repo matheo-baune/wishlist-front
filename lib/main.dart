@@ -6,8 +6,6 @@ import 'package:wishlist_front/core/SharedData.dart';
 import 'package:wishlist_front/application.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'features/groups/presentation/pages/listGroup.dart';
-
 bool isWeb() {
   return Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 }
@@ -35,10 +33,10 @@ class WishList extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Application(isAuthenticated: false,),
+      home: const Application(),
       initialRoute: '/',
       routes: {
-        '/login': (context) => const Application(isAuthenticated: true),
+        '/login': (context) => const Application(),
       },
     );
   }

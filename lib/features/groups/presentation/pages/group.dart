@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:wishlist_front/core/models/GroupModel.dart';
 import 'package:wishlist_front/core/models/UserModel.dart';
-
 import 'package:wishlist_front/features/users/UserCardWeb.dart';
-
 import 'package:wishlist_front/core/Utils.dart';
 
 
@@ -18,22 +16,22 @@ class GroupPage extends StatefulWidget {
   State<StatefulWidget> createState() => _GroupState();
 }
 
-class _GroupState extends State<GroupPage> {
+class _GroupState extends State<GroupPage> with AutomaticKeepAliveClientMixin<GroupPage>{
 
   late final int idGroup;
   late Future<List<UserModel>> futureUsers;
 
   @override
   void initState() {
-    inspect(widget.group);
     super.initState();
     idGroup = widget.group.id;
-    futureUsers = Utils.fetchUser(idGroup);
+    futureUsers = Utils().fetchUser(idGroup);
   }
 
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -69,4 +67,7 @@ class _GroupState extends State<GroupPage> {
           }),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

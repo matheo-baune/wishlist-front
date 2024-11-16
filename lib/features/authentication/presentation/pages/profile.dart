@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:wishlist_front/SessionManager.dart';
 import 'dart:convert';
 
 import 'package:wishlist_front/core/models/UserModel.dart';
+
+import '../../../../core/Utils.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,7 +21,11 @@ class _ProfileState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    futureUser = getUserById(1); // Replace 1 with the actual user ID
+    _loadUser();
+  }
+
+  void _loadUser() {
+    futureUser = Utils().getUserFromSession();
   }
 
   @override
@@ -51,17 +58,5 @@ class _ProfileState extends State<ProfilePage> {
         },
       ),
     );
-  }
-}
-
-Future<UserModel> getUserById(int idUser) async {
-  final response =
-      await http.get(Uri.parse('${dotenv.env['API_URL']}/users/$idUser'));
-
-  if (response.statusCode == 200) {
-    dynamic data = jsonDecode(utf8.decode(response.bodyBytes));
-    return UserModel.fromJson(data);
-  } else {
-    throw Exception('Failed to load user');
   }
 }

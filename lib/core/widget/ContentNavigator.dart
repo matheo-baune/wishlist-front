@@ -37,7 +37,7 @@ class ContentNavigator extends StatelessWidget {
             builder = (BuildContext _) => pages[sharedData.currentIndex];
             break;
           case '/group':
-            return Utils.pageRouteSlideRightToLeft(
+            return Utils().pageRouteSlideRightToLeft(
                 GroupPage(group: settings.arguments as GroupModel));
           case '/group/users':
             final args = settings.arguments as Map<String, dynamic>;
@@ -45,7 +45,7 @@ class ContentNavigator extends StatelessWidget {
             final groupId = args['groupId'] as int?;
 
             if (user != null && groupId != null) {
-              return Utils.pageRouteSlideRightToLeft(
+              return Utils().pageRouteSlideRightToLeft(
                 ListGift(
                   userModel: user,
                   groupId: groupId,

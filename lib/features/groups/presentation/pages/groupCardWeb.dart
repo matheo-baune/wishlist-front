@@ -20,7 +20,7 @@ class GroupCardWeb extends StatelessWidget {
       child: ListTile(
         leading: const FlutterLogo(size: 50.0),
         title: Text(
-          Utils.capitalize('${group.name} - Code : ${group.code}'),
+          Utils().capitalize('${group.name} - Code : ${group.code}'),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -32,7 +32,7 @@ class GroupCardWeb extends StatelessWidget {
           <PopupMenuEntry<ListTileTitleAlignment>>[
             PopupMenuItem<ListTileTitleAlignment>(
               onTap: () => {
-                Utils.showDialogRemoveGroup(context,group.id),
+                Utils().showDialogRemoveGroup(context,group.id),
               },
               value: ListTileTitleAlignment.threeLine,
               child: const Wrap(

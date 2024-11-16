@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../../../core/SharedData.dart';
+import '../../../../core/Utils.dart';
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({super.key});
@@ -55,8 +56,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _createGroupRequest(context);
-                          print("Group created");
+                          Utils().createGroupRequest(context,
+                              name: _groupNameController.text,
+                              description: _groupDescriptionController.text,
+                              code: _groupCodeController.text
+                          );
                         },
                         child: const Text('Create group'),
                       ),
@@ -69,20 +73,5 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         ),
       ),
     );
-  }
-
-  void _createGroupRequest(BuildContext context) async {
-    SharedData sharedData = Provider.of<SharedData>(context, listen: false);
-    await http.post(Uri.parse('${dotenv.env['API_URL']}/groups/'),
-        body: jsonEncode({
-          'name': _groupNameController.text,
-          'description': _groupDescriptionController.text,
-          'code': _groupCodeController.text,
-          'created_by': 1 // Replace 1 with the actual user ID
-        }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        });
-    sharedData.currentIndex = 0;
   }
 }

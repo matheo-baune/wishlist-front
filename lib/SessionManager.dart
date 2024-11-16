@@ -1,23 +1,76 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:wishlist_front/core/Utils.dart';
+import 'package:wishlist_front/core/models/UserModel.dart';
+
 class SessionManager {
-  static Future<void> saveSessionCookie(String cookie) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('session_cookie', cookie);
+  // Private constructor
+  SessionManager._privateConstructor();
+
+  // Singleton instance
+  static final SessionManager _instance = SessionManager._privateConstructor();
+
+  // Factory constructor to return the singleton instance
+  factory SessionManager() {
+    return _instance;
   }
 
-  static Future<String?> getSessionCookie() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('session_cookie');
+
+  Future<UserModel> getUserSession() async {
+    String? data = await SessionManager().getStringFromSession('user-data');
+    if (data != null) {
+      Map<String, dynamic> userMap = jsonDecode(data);
+      return UserModel.fromJson(userMap);
+    } else {
+      throw Exception('No user data found in session');
+    }
   }
 
-  static Future<void> clearSessionCookie() async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<String> getCookieSession() async {
+    String? cookie = await SessionManager().getStringFromSession('session_cookie');
+    if(cookie != null) {
+      return cookie;
+    } else {
+      throw Exception('No cookie found in session');
+    }
+  }
+
+  // Encapsulate SharedPreferences access
+  Future<SharedPreferences> _getPrefs() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  Future<void> saveStringForSession(String index, String cookie) async {
+    final prefs = await _getPrefs();
+    await prefs.setString(index, cookie);
+  }
+
+  Future<String?> getStringFromSession(String index) async {
+    final prefs = await _getPrefs();
+    try {
+      return prefs.getString(index);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> clearSession() async {
+    final prefs = await _getPrefs();
     await prefs.remove('session_cookie');
+    Set<String> keys = prefs.getKeys();
+    for (String key in keys) {
+      await prefs.remove(key);
+    }
+  }
+
+  Future<bool> isAuthentified() async {
+    String? cookie = await getStringFromSession('session_cookie');
+    inspect(cookie);
+    return cookie != null;
   }
 }
 
@@ -29,33 +82,16 @@ Future<void> login(String username, String password) async {
     },
     body: jsonEncode(<String, String>{
       'username': username,
-      'password': password,
+      'password': Utils().encodePassword(password),
     }),
   );
 
   if (response.statusCode == 200) {
     final cookie = response.headers['set-cookie'];
     if (cookie != null) {
-      await SessionManager.saveSessionCookie(cookie);
+      await SessionManager().saveStringForSession('session_cookie',cookie);
     }
   } else {
     throw Exception('Failed to login');
-  }
-}
-
-Future<void> fetchData() async {
-  final cookie = await SessionManager.getSessionCookie();
-  final response = await http.get(
-    Uri.parse('${dotenv.env['API_URL']}/data'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Cookie': cookie ?? '',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    // Handle the response
-  } else {
-    throw Exception('Failed to fetch data');
   }
 }

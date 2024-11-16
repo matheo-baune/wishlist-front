@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:wishlist_front/SessionManager.dart';
 
 import 'package:wishlist_front/core/SharedData.dart';
+
+import '../Utils.dart';
 
 class SidebarNavigation extends StatefulWidget {
   const SidebarNavigation({super.key});
@@ -12,19 +15,24 @@ class SidebarNavigation extends StatefulWidget {
   State<SidebarNavigation> createState() => _SidebarNavigation();
 }
 
-class _SidebarNavigation extends State<SidebarNavigation>{
-
-
+class _SidebarNavigation extends State<SidebarNavigation> {
   @override
   Widget build(BuildContext context) {
     final sharedData = Provider.of<SharedData>(context);
-
-    return SizedBox(
-      width: 100,
+    const double borderSize = 1;
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          right: BorderSide(
+            color: Colors.black, // Border color
+            width: borderSize, // Border width
+          ),
+        ),
+      ),
       child: Row(
         children: [
           SizedBox(
-            width: 79,
+            width: Utils.SIZE_SIDEBAR-borderSize,
             child: NavigationRail(
               selectedIndex: sharedData.currentIndex,
               onDestinationSelected: (int index) {
@@ -58,13 +66,12 @@ class _SidebarNavigation extends State<SidebarNavigation>{
               groupAlignment: 0.0,
               trailing: IconButton(
                 icon: const Icon(Icons.logout),
-                onPressed: () {},
+                onPressed: () async {
+                  await SessionManager().clearSession();
+                  Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+                },
               ),
             ),
-          ),
-          const VerticalDivider(
-            thickness: 1,
-            color: Colors.black,
           ),
         ],
       ),
@@ -99,9 +106,9 @@ void _showDialogJoinGroup(BuildContext context) {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
-              _requestJoinGroup(_groupCodeController.text.trim(), 1);// Replace 1 with the actual user ID
+              _requestJoinGroup(_groupCodeController.text.trim(), (await SessionManager().getUserSession()).id, context); // Replace 1 with the actual user ID
               sharedData.currentIndex = 0;
             },
             child: const Text('Join'),
@@ -112,12 +119,16 @@ void _showDialogJoinGroup(BuildContext context) {
   );
 }
 
-void _requestJoinGroup(String groupCode,int userId) async {
-  final response = await http.post(Uri.parse('${dotenv.env['API_URL']}/groups/$groupCode/join/$userId'));
+void _requestJoinGroup(String groupCode, int userId, BuildContext context) async {
+  final response = await http.post(Uri.parse('${dotenv.env['API_URL']}/groups/$groupCode/join/$userId'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${await SessionManager().getCookieSession()}',
+    },
+  );
   if (response.statusCode == 200) {
     return;
   } else {
     throw Exception('Failed to load user');
   }
 }
-

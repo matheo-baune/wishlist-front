@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'models/UserModel.dart';
+
 class SharedData with ChangeNotifier {
   int _currentIndex = 0;
 
